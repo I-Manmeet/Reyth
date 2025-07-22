@@ -104,7 +104,7 @@ body {
     text-align: center;
     padding: 20px 0;
     flex-shrink: 0;
-    position: fixed; /* Fix footer to bottom */
+    position: fixed; /* Reverted to fixed for reliability */
     bottom: 0; /* Stick to bottom of viewport */
     left: 0; /* Full width alignment */
 }
@@ -147,12 +147,14 @@ body {
         padding: 10px;
         gap: 10px;
         flex: 1 0 auto;
-        padding-bottom: 50px; /* Space for fixed footer */
+        padding-bottom: 120px; /* Increased significantly to clear footer */
+        min-height: calc(100vh - 76px); /* Ensure space for footer */
     }
     
     .footer-fixed {
         padding: 12px 0;
         font-size: 0.9rem;
+        height: 76px; /* Fixed height to match content + padding */
     }
 }
 
