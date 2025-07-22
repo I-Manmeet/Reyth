@@ -13,7 +13,6 @@
     padding: 10px 10px;
     border-radius: 15px;
     background-color: #3B5998;
-    ;
     color: #fff;
     border: none;
     font-weight: 600;
@@ -27,9 +26,8 @@
 .btn:hover {
     background-color: #2C427B;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
 }
 
 .btn:active {
@@ -40,7 +38,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 10px 20px;
     background-color: #1e1e2f !important;
-    /* ADDED !important HERE */
 }
 
 .navbar-brand {
@@ -57,6 +54,7 @@
     width: auto;
     margin-right: 10px;
 }
+
 .navbar-nav .nav-link {
     color: #ddd !important;
     font-size: 1.1rem;
@@ -69,42 +67,98 @@
     color: #3B5998 !important;
 }
 
-navbar-nav .nav-link,
+.navbar-nav .nav-link,
 .navbar-nav .nav-link:visited,
 .navbar-nav .nav-link:active,
 .navbar-nav .nav-link:focus {
     color: #ddd !important;
     text-decoration: none !important;
 }
-.footer-fixed {
-    margin-top: 100vh;
-    width: 100%;
-    background-color: #1e1e2f;
-    color: white;
-    text-align: center;
-    padding: 20px 0;
-}
 
-  html, body {
+/* ROBUST FOOTER SOLUTION - Forces footer to bottom */
+html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    
+}
 
-  }
-  .main {
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main {
     display: flex;
     flex-wrap: wrap; 
     justify-content: center;
     gap: 20px; 
     padding: 20px;
-  }
-  .card img {
+    flex: 1 0 auto;
+}
+
+.footer-fixed {
+    width: 100%;
+    background-color: #1e1e2f;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    flex-shrink: 0;
+    position: fixed; /* Fix footer to bottom */
+    bottom: 0; /* Stick to bottom of viewport */
+    left: 0; /* Full width alignment */
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .main {
+        min-height: calc(100vh - 80px); /* Adjusted for navbar (~60px) + footer (~20px) */
+        padding-bottom: 60px; /* Space for fixed footer */
+    }
+    
+    body {
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) and (min-width: 481px) {
+    .main {
+        padding: 15px;
+        gap: 15px;
+        flex: 1 0 auto;
+        padding-bottom: 55px; /* Space for fixed footer */
+    }
+    
+    .footer-fixed {
+        padding: 15px 0;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    body {
+        min-height: 100vh;
+        height: auto;
+    }
+    
+    .main {
+        padding: 10px;
+        gap: 10px;
+        flex: 1 0 auto;
+        padding-bottom: 50px; /* Space for fixed footer */
+    }
+    
+    .footer-fixed {
+        padding: 12px 0;
+        font-size: 0.9rem;
+    }
+}
+
+.card img {
     width: 100%;
     height: auto;
     object-fit: cover;
     border-radius: 8px;
-  }
-  
-  
-    
+}
