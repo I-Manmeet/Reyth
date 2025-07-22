@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="style/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+
+    <script>
+        $(document).ready(function () {
+
+
+            $("#submitSignUp").click(function () {
+                let email = $("#txtEmail").val();
+                let pwd = $("#txtPwd").val();
+                let utype = $("#utype").val();
+                let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                let pwdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+
+                if (email === "" || pwd === "" || utype === "") {
+                    alert("Please fill all the fields");
+                    return;
+                }
+
+                if (!emailRegex.test(email)) {
+                    alert("Invalid email format");
+                    return;
+                }
+
+                if (!pwdRegex.test(pwd)) {
+                    alert("Password must contain a digit, a lowercase, an uppercase letter, and be at least 8 characters.");
+                    return;
+                }
+
+
+                $.ajax({
+                    type: "get",
+                    url: "/signup",
+                    data: {
+                        txtEmail: email,
+                        txtPwd: pwd,
+                        utype: utype
+                    }
+                }).then(function (response) {
+                    alert(response);
+                }).fail(function (err) {
+                    alert("SignUp failed " + err.message);
+                });
+            });
+
+
+            $("#txtEmail").keyup(function () {
+                let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                let email = $(this).val();
+                if (email === "") {
+                    $("#errmsg").html("Email can't be empty").css("color", "red");
+                    $("txtEmail").css("width", "85%")
+                    $(this).focus();
+
+                } else if (!regex.test(email)) {
+                    $("#errmsg").html("Invalid email format ❌").css("color", "red");
+                    $(this).focus();
+                } else {
+                    $("#errmsg").html("✅").css("color", "green");
+
+
+                }
+            });
+            $("#txtEmail").blur(function () {
+                let email = $(this).val();
+                if (email !== "") {
+                    $.ajax({
+                        type: "get",
+                        url: "/chk-email",
+                        data: { txtEmail: email }
+                    }).then(function (response) {
+
+                        $("#ava").html(response).css("color", "gray");
+                    }).fail(function (err) {
+                        $("#ava").html(err.message).css("color", "red");
+                    });
+                }
+            });
+
+            $("#txtPwd").keyup(function () {
+                let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+                let pwd = $(this).val();
+                if (pwd === "") {
+                    $("#lblPwd").html("Password can't be empty").css("color", "red");
+                    return;
+                }
+                if (regex.test(pwd) == true)
+                    $("#lblPwd").html("✅");
+                else
+                    $("#lblPwd").html("Wrong Format❌").css("color", "red");
+            })
+
+            $("#logPwd").keyup(function () {
+                let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+                let pwd = $(this).val();
+                if (pwd === "") {
+                    $("#lblPwd1").html("Password can't be empty").css("color", "red");
+                    return;
+                }
+                if (regex.test(pwd) == true)
+                    $("#lblPwd1").html("✅");
+                else
+                    $("#lblPwd1").html("Wrong Format ❌").css("color", "red");
+            })
+
+            $("#logEmail").keyup(function () {
+                let regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                let email = $(this).val();
+                if (email === "") {
+                    $("#errmsg1").html("Email can't be empty").css("color", "red");
+
+                    $(this).focus();
+
+                } else if (!regex.test(email)) {
+                    $("#errmsg1").html("Invalid email format ❌").css("color", "red");
+                    $(this).focus();
+                } else {
+                    $("#errmsg1").html("✅").css("color", "green");
+
+
+                }
+            });
+            $("#togglePwdSignup").click(function () {
+                let input = $("#txtPwd");
+                let type = input.attr("type") === "password" ? "text" : "password";
+                input.attr("type", type);
+                $(this).toggleClass("fa-eye fa-eye-slash");
+            });
+
+            $("#togglePwdLogin").click(function () {
+                let input = $("#logPwd");
+                let type = input.attr("type") === "password" ? "text" : "password";
+                input.attr("type", type);
+                $(this).toggleClass("fa-eye fa-eye-slash");
+            });
+
+
+
+
+            $("#loginbtn").click(function () {
+                let email = $("#logEmail").val();
+                let pwd = $("#logPwd").val();
+                let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                let pwdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+                if (email === "" || pwd === "") {
+                    alert("Please fill all the fields");
+                    return;
+                }
+
+                if (!emailRegex.test(email)) {
+                    alert("Invalid email format");
+                    return;
+                }
+
+                if (!pwdRegex.test(pwd)) {
+                    alert("Invalid password format");
+                    return;
+                }
+
+                $.ajax({
+                    type: "get",
+                    url: "/login",
+                    data: {
+                        logEmail: email,
+                        logPwd: pwd
+                    }
+                }).then(function (response) {
+                    if (response == "Blocked") {
+                        alert("Sorry, you are Blocked");
+                    } else if (response == "Invalid") {
+                        alert("Invalid email ID or password");
+                    }  else {
+                        if (response == "Player") {
+                            location.href = "dash-player.html";
+                            localStorage.setItem("activeUser", email);
+                        }
+                        else if (response == "Organizer") {
+                            location.href = "org-dash.html";
+                            localStorage.setItem("activeUser", email);
+                        }
+                        else if (response == "Admin") {
+                            location.href = "dashAdmin.html";
+                            localStorage.setItem("activeUser", email);
+                        }
+                    }
+                }).fail(function (err) {
+                    alert("Login failed " + err.message);
+                });
+            });
+
+        })
+
+
+    </script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg  ">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="pics/logo.png" alt="Logo" width="50%" height="100" class="d-inline-block align-text-top">
+                REYTH
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="#ourServices">Our Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#ourMission">Our Mission</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#reachUs">Reach Us</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#signUpModal" data-bs-whatever="@mdo">Sign Up</button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#loginModal" data-bs-whatever="@fat">Login</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="main-body">
+        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="pics/swim.png" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="pics/win.png" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="pics/baseball.png" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="pics/race.png" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="pics/group.png" class="d-block w-100" alt="...">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <div>
+            <center>
+                <h1 id="ourServices">Our Services</h1>
+            </center>
+        </div>
+        <div class="CARDS card-container">
+
+
+            <div class="card" style="width: 24rem;">
+                <img src="pics/register.png" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Register Your Organization
+                    </h5>
+                    <p class="card-text">Establish your presence! Register your organization or club with us to unlock a
+                        suite of tools designed for event management and community building. Gain visibility and
+                        streamline your administrative tasks effortlessly.</p>
+
+                </div>
+            </div>
+            <div class="card" style="width: 24rem;">
+                <img src="pics/poste.png" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Post New Events
+                    </h5>
+                    <p class="card-text">Bring your events to life. Easily create and publish new tournaments, matches,
+                        or gatherings directly on our platform. Reach a wider audience and attract participants with our
+                        intuitive event posting features."
+
+                    </p>
+
+                </div>
+            </div>
+            <div class="card" style="width: 24rem;">
+                <img src="pics/discover.png" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Discover Nearby Events
+                    </h5>Never miss out on local action. Explore and find sporting events happening in your vicinity.
+                    Our search and filtering options make it simple to locate tournaments and activities close to you.".
+                    </p>
+
+                </div>
+            </div>
+
+
+        </div>
+        <div>
+            <h1 id="ourMission">
+                <center>Our Mission</center>
+            </h1>
+
+            <div class="row align-items-center mission-content-row">
+                <div class="col-md-6">
+                    <img src="pics/mission.png" class="img-fluid rounded shadow-sm"
+                        alt="Our Mission - People playing physical sports" style="height:450px;width:650px;">
+                </div>
+                <div class="col-md-6">
+                    <p class="lead mission-text">
+                    <p>
+                        Our mission is to <strong>reignite the passion for physical games</strong> and foster a culture
+                        of movement and vitality. We aim to <strong>empower schools, colleges, communities, and
+                            organizations</strong> to effortlessly organize, promote, and manage <i>real-world sporting
+                            events</i>.
+                        By bridging the gap between digital convenience and <i>physical participation</i>, we strive to
+                        make sports more accessible and engaging for everyone.
+                    </p>
+
+                    <p>
+                        Through our platform, we’re <strong>reviving the spirit of traditional games</strong>,
+                        reconnecting individuals with their local sporting communities, and encouraging a healthier,
+                        more active lifestyle.
+                        We believe in the power of play — not just as a pastime, but as a <strong>foundation for
+                            physical wellness, social connection</strong>, and lifelong joy.
+                    </p>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h1>
+                <center>Meet the Developers</center>
+            </h1>
+
+            <div class="row justify-content-center developers-cards-row">
+
+                <div class="col-md-5 col-sm-10 mb-4">
+                    <div class="card developer-card">
+                        <div class="card-body text-center">
+                            <div class="developer-photo-placeholder">
+
+                                <img src="pics/mentor.png" class="card-img-top" alt="...">
+                            </div>
+                            <h5 class="card-title developer-card-title">Under The Guidance Of</h5>
+                            <p class="card-text developer-card-text">
+                                Mr.Rajesh Bansal
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-5 col-sm-10 mb-4">
+                    <div class="card developer-card">
+                        <div class="card-body text-center">
+                            <div class="developer-photo-placeholder">
+
+                                <img src="pics/me1.jpeg" class="card-img-top" alt="...">
+                            </div>
+                            <h5 class="card-title developer-card-title">Developed By</h5>
+                            <p class="card-text developer-card-text">
+                                Manmeet Kaur
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid reach-us-container my-5">
+            <h1 class="text-center section-heading reach-us-heading" id="reachUs">Reach Us</h1>
+
+            <div class="row justify-content-center align-items-center reach-us-content-row">
+
+                <div class="col-lg-6 col-md-10 mb-4 mb-lg-0">
+                    <div class="map-container rounded shadow-sm">
+
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2743.832960683679!2d74.9654497155638!3d30.54228998171092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391732551e411b95%3A0x86c6d091a13b91d7!2sKot%20Kapura%2C%20Punjab%2C%20India!5e0!3m2!1sen!2sin!4v1689945600000!5m2!1sen!2sin"
+                            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 col-md-10">
+                    <div class="contact-info-box rounded shadow-sm p-4">
+                        <h4 class="contact-info-title mb-4">Contact Information</h4>
+                        <p class="contact-detail"><i class="fas fa-map-marker-alt contact-icon"></i>
+                            <strong>Address:</strong> 123 Sports Arena Rd, Kot Kapura, Punjab, India</p>
+                        <p class="contact-detail"><i class="fas fa-phone contact-icon"></i> <strong>Phone:</strong> +91
+                            98765 43210</p>
+                        <p class="contact-detail"><i class="fas fa-envelope contact-icon"></i> <strong>Email:</strong>
+                            info@reyth.com</p>
+                        <p class="contact-detail"><i class="fas fa-globe contact-icon"></i> <strong>Website:</strong>
+                            www.reyth.com</p>
+                        <p class="contact-detail"><i class="fas fa-clock contact-icon"></i> <strong>Hours:</strong>
+                            Mon-Fri: 9 AM - 5 PM</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <footer class="bg-dark text-white pt-4 mt-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <a href="index.html" class="text-white text-decoration-none mb-3 mb-md-0 fw-bold">
+                Home
+            </a>
+            <div class="mb-3 mb-md-0">
+                <a href="https://facebook.com" target="_blank" class="text-white me-3">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" class="text-white me-3">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="text-white me-3">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="text-white">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+            </div>
+        </div>
+        <div class="text-center mt-3 border-top pt-2" style="font-size: 0.9rem;">
+            © 2025 <strong>Reyth</strong>. All rights reserved.
+        </div>
+    </footer>
+
+
+
+    <!-- SignUpmodal -->
+    <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Sign Up</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signUp">
+
+
+                        <div class="mb-3">
+                            <div style="display:flex;justify-content:space-between">
+                                <label for="exampleFormControlInput1" class="form-label">Email address: </label>
+                                <div id="errmsg"></div>
+                            </div>
+
+                            <input type="email" class="form-control" placeholder="name@example.com" id="txtEmail"
+                                name="txtEmail">
+                            <div id="ava"></div>
+
+                        </div>
+                        <div class="mb-3">
+                            <div style="display:flex;justify-content:space-between">
+                                <label for="password" class="form-label">Password: </label>
+                                <div id="lblPwd"></div>
+                            </div>
+                            <div class="position-relative">
+                                <input type="password" id="txtPwd" name="txtPwd" class="form-control" required
+                                    minlength="8">
+                                <i class="fa-solid fa-eye position-absolute top-50 end-0 translate-middle-y me-3 eye"
+                                    id="togglePwdSignup" style="cursor:pointer;"></i>
+                            </div>
+                            <div id="passwordFeedback" class="form-text">Password must contain a special character,a
+                                capital letter and a digit</div>
+
+                        </div>
+                        <select class="form-select" aria-label="Default select example" id="utype">
+                            <option selected value="">User type:</option>
+                            <option value="Player">Player</option>
+                            <option value="Organizer">Organizer</option>
+                        </select>
+
+                        <div id="formMessage" class="mt-3 text-center"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        style="background-color: gray;">Close</button>
+                    <button type="button" class="btn btn-primary" id="submitSignUp">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Login modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <div style="display:flex;justify-content:space-between">
+                                <label for="exampleFormControlInput1" class="form-label">Email address: </label>
+                                <div id="errmsg1"></div>
+                            </div>
+                            <input type="email" class="form-control" placeholder="name@example.com" name="logEmail"
+                                id="logEmail">
+                        </div>
+                        <div class="mb-3">
+                            <div style="display:flex;justify-content:space-between">
+                                <label for="password" class="form-label" minlength="8">Password: </label>
+                                <div id="lblPwd1"></div>
+
+                            </div>
+
+
+                            <div class="position-relative">
+                                <input type="password" class="form-control pe-5" id="logPwd"
+                                    placeholder="Enter your password">
+                                <i class="fa-solid fa-eye position-absolute top-50 end-0 translate-middle-y me-3 eye"
+                                    id="togglePwdLogin" style="cursor: pointer;"></i>
+                            </div>
+
+
+                            <div id="passwordFeedback" class="form-text">Password must contain a special character,a
+                                capital letter and a digit</div>
+                        </div>
+
+
+                        <div id="formMessage" class="mt-3 text-center"></div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        style="background-color: gray;">Close</button>
+                    <button type="button" class="btn btn-primary" id="loginbtn">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

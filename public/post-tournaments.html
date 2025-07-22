@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="style/styles.css">
+</style>
+<script>
+    $(document).ready(function () {
+        
+        $("#publishEvent").click(function () {
+            
+
+
+            let emailid = $("#emailid").val();
+            let event = $("#event").val();
+            let doe = $("#doe").val();
+            let toe = $("#toe").val();
+            let address = $("#address").val();
+            let city = $("#city").val();
+
+            let sports = $("#sports").val();
+            if (!sports || !sports.length) {
+                alert("Please select altleast one sport.");
+                return;
+            }
+            sports = sports.join(",");
+
+            let minage = $("#minage").val();
+            let maxage = $("#maxage").val();
+            let lastdate = $("#lastdate").val();
+            let fee = $("#fee").val();
+            let prize = $("#prize").val();
+            let contact = $("#contact").val();
+
+
+
+            $.ajax({
+                type: "get",
+                url: "/post-event",
+                data: {
+                    emailid: emailid,
+                    event: event,
+                    doe: doe,
+                    toe: toe,
+                    address: address,
+                    city: city,
+                    sports: sports,
+                    minage: minage,
+                    maxage: maxage,
+                    lastdate: lastdate,
+                    fee: fee,
+                    prize: prize,
+                    contact: contact,
+
+
+
+
+                }
+
+            }).then(function (response) {
+                alert(response);
+            }).fail(function (err) {
+                alert("Event posted" + err.message);
+            })
+        })
+    })
+    function showUser(){
+        
+        let activeUser=localStorage.getItem("activeUser");
+        document.getElementById("emailid").value=activeUser;
+        // alert(activeUser);
+    }
+</script>
+
+<body onload="showUser()">
+    
+    <div class="row ">
+        <div class="col-md-8 offset-md-2 text-white" >
+            <center >
+                <h2  class=" text-white text-center  py-3 mb-4" style="   background-color: #1e1e2f !important;"> Tournament Details</h2>
+            </center>
+        </div>
+    </div>
+    <div class="col-md-8 offset-md-2">
+        <form class="row g-3">
+            <div class="col-md-6">
+                <label for="emailid" class="form-label">Email</label>
+                <input type="email" class="form-control" id="emailid" name="emailid" required>
+            </div>
+            <div class="col-md-6">
+                <label for="event" class="form-label">Event Title</label>
+                <input type="text" class="form-control" id="event" name="event" required>
+            </div>
+            <div class="col-6">
+                <label for="doe" class="form-label">date</label>
+                <input type="date" class="form-control" id="doe" name="doe" required>
+            </div>
+            <div class="col-6">
+                <label for="toe" class="form-label">Time</label>
+                <input type="time" class="form-control" id="toe" name="toe" required>
+            </div>
+            <div class="col-md-6">
+                <label for="" class="form-label">Location/Address</label>
+                <input type="text" class="form-control" id="address" name="address" required>
+            </div>
+            <div class="col-md-6">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" name="city" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="ports" class="form-label">Sports</label>
+                <select id="sports" class="form-select" name="sports" multiple size="1" required>
+                    <option disabled selected>Choose sports</option>
+                    <option>Cricket</option>
+                    <option>Football (Soccer)</option>
+                    <option>Basketball</option>
+                    <option>Tennis</option>
+                    <option>Badminton</option>
+                    <option>Volleyball</option>
+                    <option>Table Tennis</option>
+                    <option>Baseball</option>
+                    <option>Hockey</option>
+                    <option>Swimming</option>
+                </select>
+
+            </div>
+            <div class="col-md-6">
+                <label for="minage" class="form-label">Minage</label>
+                <input type="number" class="form-control" id="minage" name="minage" min="14" max="40" required>
+            </div>
+            <div class="col-md-6">
+                <label for="maxage" class="form-label">Maxage</label>
+                <input type="number" class="form-control" id="maxage" name="maxage" min="3" max="40" required>
+            </div>
+            <div class="col-md-6">
+                <label for="lastdate" class="form-label">Last Date of registration </label>
+                <input type="date" class="form-control" id="lastdate" name="lastdate" min="3" max="100" required>
+            </div>
+            <div class="col-md-6">
+                <label for="fee" class="form-label">Fee</label>
+                <input type="number" class="form-control" id="fee" name="fee" min="0" required>
+            </div>
+            <div class="col-md-6">
+                <label for="prize" class="form-label">Prize Money</label>
+                <input type="number" class="form-control" id="prize" name="prize" min="0" required>
+            </div>
+            <div class="col-12">
+                <label for="contact" class="form-label">Contact Person</label>
+                <input type="text" class="form-control" id="contact" name="contact" required>
+            </div>
+
+            <div class="col-12">
+                <center> <button type="button" class="btn btn-primary" id="publishEvent">Publish event</button></center>
+            </div>
+        </form>
+
+
+
+    </div>
+    
+</body>
+
+</html>
